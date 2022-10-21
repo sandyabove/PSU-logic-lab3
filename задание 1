@@ -9,67 +9,141 @@ using namespace std;
 
 struct pri_queue
 {
-    int num;
-    int priority;
-    pri_queue* next = nullptr;
+	char num[10];
+	int priority;
+	pri_queue* next = nullptr;
+
 };
 
+void insert(pri_queue*& main, pri_queue* new_el) {
 
 
-void insert(pri_queue& main, pri_queue new_el) {
+	pri_queue* tmp = main;
+	pri_queue* left = main;
+
+	while (tmp != nullptr && new_el->priority < tmp->priority) {
+		left = tmp;
+		tmp = tmp->next;
+	}
 
 
-    pri_queue* tmp = main;
-    pri_queue* left = main;
+	if (tmp != left) {
+		left->next = new_el;
+	}
+	else main = new_el;
 
-    while (tmp != nullptr && new_el->priority < tmp->priority) {
-        left = tmp;
-        tmp = tmp->next;
-    }
+	new_el->next = tmp;
+
+}
 
 
-    if (tmp != left) {
-        left->next = new_el;
-    }
-    else main = new_el;
 
-    new_el->next = tmp;
 
+/* Функция удаления элемента очереди (первого) */
+int end(pri_queue* head) {
+	if (head == NULL)
+	{
+		printf("Очередь пуста!\n");
+		exit(1);
+	}
+	int val;
+	
+
+	struct pri_queue* tmp = head;  // принять к сведению данные верхнего узла
+	val = tmp->priority;
+	printf("Верхний удаляемый элемент: %s\n", head->num);
+	head = head->next;  // обновляем верхний указатель, чтобы он указывал на следующий узел
+
+
+
+	//printf(" % d",  tmp->num);
+	free(tmp);
+	return val;
+
+}
+
+
+/* Функция поиска элемента очереди */
+struct pri_queue* find(pri_queue* head)
+{
+	struct pri_queue* tmp = head;
+	if (head == NULL)
+	{
+		printf("Очередь пуста!\n");
+		return 0;
+	}
+
+	char name[20];
+	printf("Введите название элемента для поиска: ");
+	scanf_s("%s", &name,20);
+
+	while (tmp)
+	{
+		if (strcmp(name,tmp->num) == 0)
+		{
+			printf("Элемент найден)\n");
+			return 0;
+		}
+		tmp = tmp->next;
+	}
+	printf("Элемент не найден(\n");
+	return 0;
 }
 
 
 int main()
 {
-    setlocale(LC_ALL, "Rus");
-    srand(time(NULL));
+	setlocale(LC_ALL, "Rus");
+	srand(time(NULL));
 
-    int count;
-    cout << "Введите кол-во данных: ";
-    cin >> count;
+	int count;
+	cout << "Введите кол-во данных: ";
+	cin >> count;
 
-    if (count <= 1) count = 2;
+	if (count <= 1) count = 2;
 
-    pri_queue* head = nullptr;
+	pri_queue* head = nullptr;
 
-    while (count) {
+	while (count) {
 
-        pri_queue* tmp = new pri_queue;
-        cout << "Введите число: ";
-        cin >> tmp->num;
-        cout << "Введите приоритет: ";
-        cin >> tmp->priority;
+		pri_queue* tmp = new pri_queue;
+		cout << "Введите число: ";
+		cin >> tmp->num;
+		cout << "Введите приоритет: ";
+		cin >> tmp->priority;
 
-        insert(head, tmp);
+		insert(head, tmp);
 
-        count--;
-    }
+		count--;
 
-    pri_queue* tmp = head;
 
-    while (tmp != nullptr) {
-        cout << tmp->num << endl;
-        tmp = tmp->next;
-    }
 
-    return 0;
+
+	}
+
+	pri_queue* tmp = head;
+
+	while (tmp != nullptr) {
+		cout << tmp->num << endl;
+		tmp = tmp->next;
+	}
+	
+	while (true) {
+		int i = getchar();
+		switch (i) {
+
+		case '-':
+			end(head);
+
+			break;
+		case 'f':
+			find(head);
+
+			break;
+		default:
+			break;
+		}
+		
+	}
+	return 0;
 }
